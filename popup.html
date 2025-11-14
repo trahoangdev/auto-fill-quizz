@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Fill Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 350px;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 20px;
+        }
+        h2 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #667eea;
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.3s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .examples {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .examples strong {
+            color: #667eea;
+        }
+        .tip {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff3cd;
+            border-radius: 6px;
+            font-size: 11px;
+            color: #856404;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🚀 Auto Fill Quiz</h2>
+        
+        <div class="input-group">
+            <label for="answers">Nhập đáp án:</label>
+            <textarea id="answers" placeholder="A,C,B,D,A,B,C,D" autofocus></textarea>
+            <div class="hint">Cách nhau bởi dấu phẩy (,)</div>
+        </div>
+
+        <div class="examples">
+            <strong>Ví dụ:</strong><br>
+            • Chữ cái: A,C,B,D hoặc a,c,b,d<br>
+            • Số: 0,2,1,3 (0=A, 1=B, 2=C, 3=D)
+        </div>
+
+        <button id="openIframeBtn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-bottom: 10px;">
+            📂 Mở Iframe Ra Tab Mới
+        </button>
+        
+        <button id="fillBtn">✨ Điền Đáp Án</button>
+
+        <div id="status" class="status"></div>
+
+        <div class="tip">
+            💡 <strong>Trang có iframe:</strong> Click "Mở Iframe" trước<br>
+            💡 <strong>Phím tắt:</strong> Ctrl+Enter để điền nhanh
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
