@@ -14,8 +14,11 @@
     // Hỏi đáp án
     let answersInput = prompt(
         '📝 Nhập đáp án (cách nhau bởi dấu phẩy):\n\n' +
-        'Ví dụ: A,C,B,D hoặc a,c,b,d hoặc 0,2,1,3\n' +
-        '(A/a/0 = đáp án đầu, B/b/1 = đáp án thứ 2, ...)'
+        'Ví dụ:\n' +
+        '• Chọn 1: A,C,B,D\n' +
+        '• Chọn nhiều: AB,C,BD,A\n' +
+        '• Dùng số: 0,12,1,03\n\n' +
+        '(A/0 = đáp án đầu, B/1 = thứ 2, ...)'
     );
 
     if (!answersInput || answersInput.trim() === '') {
@@ -23,17 +26,22 @@
         return;
     }
 
-    // Hàm tìm radio buttons
-    function findRadios(selector) {
-        let radios = null;
+    // Hàm tìm radio/checkbox theo đúng thứ tự DOM
+    function findInputs(selector) {
+        let inputs = [];
         
         if (selector && selector.trim()) {
             console.log(`[Auto Fill] Tìm trong selector: "${selector}"`);
             try {
                 const container = document.querySelector(selector);
                 if (container) {
-                    radios = container.querySelectorAll('input[type="radio"]');
-                    console.log(`[Auto Fill] ✓ Tìm thấy ${radios.length} radio buttons trong "${selector}"`);
+                    // Lấy theo đúng thứ tự DOM
+                    inputs = Array.from(container.querySelectorAll('input')).filter(
+                        input => input.type === 'radio' || input.type === 'checkbox'
+                    );
+                    const radios = inputs.filter(i => i.type === 'radio');
+                    const checkboxes = inputs.filter(i => i.type === 'checkbox');
+                    console.log(`[Auto Fill] ✓ Tìm thấy ${radios.length} radio, ${checkboxes.length} checkbox trong "${selector}"`);
                 } else {
                     console.error(`[Auto Fill] ✗ Không tìm thấy element với selector: "${selector}"`);
                 }
@@ -43,18 +51,23 @@
         }
         
         // Nếu không có selector hoặc không tìm thấy, tìm toàn trang
-        if (!radios || radios.length === 0) {
+        if (inputs.length === 0) {
             console.log('[Auto Fill] Tìm trong toàn trang');
-            radios = document.querySelectorAll('input[type="radio"]');
+            // Lấy theo đúng thứ tự DOM
+            inputs = Array.from(document.querySelectorAll('input')).filter(
+                input => input.type === 'radio' || input.type === 'checkbox'
+            );
             
             // Thử tìm trong iframe
-            if (radios.length === 0) {
+            if (inputs.length === 0) {
                 const iframes = document.querySelectorAll('iframe');
                 iframes.forEach(iframe => {
                     try {
-                        const iframeRadios = iframe.contentDocument?.querySelectorAll('input[type="radio"]');
-                        if (iframeRadios && iframeRadios.length > 0) {
-                            radios = iframeRadios;
+                        const iframeInputs = Array.from(iframe.contentDocument?.querySelectorAll('input') || []).filter(
+                            input => input.type === 'radio' || input.type === 'checkbox'
+                        );
+                        if (iframeInputs.length > 0) {
+                            inputs = iframeInputs;
                         }
                     } catch (e) {
                         // Cross-origin iframe
@@ -63,23 +76,25 @@
             }
         }
         
-        return radios;
+        return inputs;
     }
 
-    // Hàm chờ tìm radio buttons
-    function waitForRadios(maxAttempts = 10, interval = 500) {
+    // Hàm chờ tìm inputs
+    function waitForInputs(maxAttempts = 10, interval = 500) {
         let attempts = 0;
         
         const checkInterval = setInterval(() => {
             attempts++;
             
-            const radios = findRadios(customSelector);
+            const inputs = findInputs(typeof customSelector !== 'undefined' ? customSelector : '');
+            const radios = inputs.filter(i => i.type === 'radio');
+            const checkboxes = inputs.filter(i => i.type === 'checkbox');
             
-            console.log(`[Auto Fill] Lần thử ${attempts}/${maxAttempts}: Tìm thấy ${radios.length} radio buttons`);
+            console.log(`[Auto Fill] Lần thử ${attempts}/${maxAttempts}: ${radios.length} radio, ${checkboxes.length} checkbox`);
             
-            if (radios.length > 0) {
+            if (inputs.length > 0) {
                 clearInterval(checkInterval);
-                startAutofill(radios);
+                startAutofill(inputs);
             } else if (attempts >= maxAttempts) {
                 clearInterval(checkInterval);
                 alert('❌ Không tìm thấy câu hỏi trắc nghiệm!\n\nThử:\n1. Kiểm tra selector\n2. Đợi trang load xong\n3. Xem Console để biết chi tiết');
@@ -88,25 +103,42 @@
     }
 
     // Hàm điền đáp án
-    function startAutofill(allRadios) {
-        console.log(`\n[Auto Fill] Bắt đầu với ${allRadios.length} radio buttons`);
+    function startAutofill(allInputs) {
+        const radios = allInputs.filter(i => i.type === 'radio');
+        const checkboxes = allInputs.filter(i => i.type === 'checkbox');
+        
+        console.log(`\n[Auto Fill] Bắt đầu với ${radios.length} radio, ${checkboxes.length} checkbox`);
         
         // Tách và chuẩn hóa đáp án
         const answers = answersInput.split(',').map(a => a.trim().toUpperCase());
         console.log(`[Auto Fill] Đáp án: ${answers.join(', ')}`);
 
-        // Group radio buttons theo name
+        // Group inputs theo name và giữ thứ tự xuất hiện trong DOM
         const groupedByName = {};
-        allRadios.forEach(radio => {
-            const name = radio.name || radio.id || 'unknown';
+        const firstAppearance = {}; // Lưu vị trí xuất hiện đầu tiên của mỗi name
+        
+        allInputs.forEach((input, index) => {
+            const name = input.name || input.id || 'unknown';
             if (!groupedByName[name]) {
                 groupedByName[name] = [];
+                firstAppearance[name] = index; // Lưu vị trí đầu tiên
             }
-            groupedByName[name].push(radio);
+            groupedByName[name].push(input);
         });
 
-        const questions = Object.values(groupedByName);
+        // Sắp xếp theo thứ tự xuất hiện thực tế trong DOM
+        const nameOrder = Object.keys(groupedByName).sort((a, b) => firstAppearance[a] - firstAppearance[b]);
+        
+        // Lấy câu hỏi theo đúng thứ tự xuất hiện
+        const questions = nameOrder.map(name => groupedByName[name]);
         console.log(`[Auto Fill] Tìm thấy ${questions.length} câu hỏi`);
+        
+        // Debug: Hiển thị thứ tự câu hỏi
+        console.log('\n[Auto Fill] === Thứ tự câu hỏi ===');
+        nameOrder.forEach((name, idx) => {
+            const opts = groupedByName[name];
+            console.log(`[Auto Fill] Câu ${idx + 1}: name="${name}", type="${opts[0].type}", options=${opts.length}, firstIndex=${firstAppearance[name]}`);
+        });
 
         if (questions.length === 0) {
             alert('❌ Không thể phân tích câu hỏi!');
@@ -132,37 +164,70 @@
                 return;
             }
 
-            const pos = answerMap[answer];
-            
-            if (pos === undefined) {
+            // Debug: Log thông tin câu hỏi
+            console.log(`\n[Auto Fill] --- Câu ${idx + 1} ---`);
+            console.log(`[Auto Fill] Name: ${options[0].name}, Type: ${options[0].type}`);
+            console.log(`[Auto Fill] Đáp án nhập: "${answer}"`);
+
+            // Phân tích đáp án - có thể nhiều ký tự (AB, CD, 012...)
+            const positions = [];
+            for (let char of answer) {
+                const pos = answerMap[char];
+                console.log(`[Auto Fill]   Ký tự "${char}" → vị trí ${pos}`);
+                if (pos !== undefined && pos < options.length) {
+                    positions.push(pos);
+                }
+            }
+
+            console.log(`[Auto Fill] Các vị trí sẽ chọn: [${positions.join(', ')}]`);
+
+            if (positions.length === 0) {
                 console.error(`[Auto Fill] Câu ${idx + 1}: Đáp án "${answer}" không hợp lệ`);
                 failCount++;
                 return;
             }
 
-            if (pos >= options.length) {
-                console.error(`[Auto Fill] Câu ${idx + 1}: Đáp án "${answer}" vượt quá số lựa chọn (${options.length})`);
-                failCount++;
-                return;
+            const isCheckbox = options[0].type === 'checkbox';
+            console.log(`[Auto Fill] Loại: ${isCheckbox ? 'checkbox' : 'radio'}`);
+            
+            // Nếu là radio mà chọn nhiều đáp án
+            if (!isCheckbox && positions.length > 1) {
+                console.warn(`[Auto Fill] ⚠️ Câu ${idx + 1}: Radio button với ${positions.length} đáp án - Sẽ thử chọn tất cả (có thể là nhiều nhóm radio)`);
+                // Không splice - cho phép chọn nhiều radio
             }
 
-            // Click vào đáp án
+            // Click vào các đáp án
             try {
-                options[pos].click();
-                options[pos].checked = true;
-                options[pos].dispatchEvent(new Event('change', { bubbles: true }));
-                options[pos].dispatchEvent(new Event('click', { bubbles: true }));
-                
-                // Highlight
-                const parent = options[pos].closest('label, .option, div, li');
-                if (parent) {
-                    parent.style.backgroundColor = '#d4edda';
-                    parent.style.border = '2px solid #28a745';
-                    parent.style.transition = 'all 0.3s';
+                // Chỉ bỏ chọn tất cả nếu là radio VÀ chỉ chọn 1 đáp án
+                if (!isCheckbox && positions.length === 1) {
+                    options.forEach(opt => opt.checked = false);
                 }
+                
+                let selectedCount = 0;
+                
+                // Chọn từng đáp án
+                positions.forEach(pos => {
+                    const input = options[pos];
+                    
+                    input.click();
+                    input.checked = true;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    input.dispatchEvent(new Event('click', { bubbles: true }));
+                    
+                    // Highlight
+                    const parent = input.closest('label, .option, div, li');
+                    if (parent) {
+                        parent.style.backgroundColor = '#d4edda';
+                        parent.style.border = '2px solid #28a745';
+                        parent.style.transition = 'all 0.3s';
+                    }
+                    
+                    selectedCount++;
+                });
 
                 successCount++;
-                console.log(`[Auto Fill] ✓ Câu ${idx + 1}: Chọn ${answer} (vị trí ${pos})`);
+                const answerText = positions.map(p => String.fromCharCode(65 + p)).join('');
+                console.log(`[Auto Fill] ✓ Câu ${idx + 1}: ${answerText} (${selectedCount} đáp án, ${isCheckbox ? 'checkbox' : 'radio'})`);
             } catch (e) {
                 console.error(`[Auto Fill] ✗ Câu ${idx + 1}: Lỗi - ${e.message}`);
                 failCount++;
@@ -215,18 +280,21 @@
     }
 
     // Bắt đầu
-    console.log('[Auto Fill] Script thủ công đã chạy');
+    console.log('[Auto Fill] Script thủ công đã chạy (Hỗ trợ Radio + Checkbox)');
+    const customSelector = typeof customSelector !== 'undefined' ? customSelector : '';
     if (customSelector) {
         console.log(`[Auto Fill] Sử dụng selector: "${customSelector}"`);
     }
     
-    const immediateRadios = findRadios(customSelector);
-    if (immediateRadios.length > 0) {
-        console.log(`[Auto Fill] Tìm thấy ngay ${immediateRadios.length} radio buttons`);
-        startAutofill(immediateRadios);
+    const immediateInputs = findInputs(customSelector);
+    if (immediateInputs.length > 0) {
+        const radios = immediateInputs.filter(i => i.type === 'radio');
+        const checkboxes = immediateInputs.filter(i => i.type === 'checkbox');
+        console.log(`[Auto Fill] Tìm thấy ngay ${radios.length} radio, ${checkboxes.length} checkbox`);
+        startAutofill(immediateInputs);
     } else {
         console.log('[Auto Fill] Chưa tìm thấy, đang chờ...');
-        waitForRadios();
+        waitForInputs();
     }
 
 })();

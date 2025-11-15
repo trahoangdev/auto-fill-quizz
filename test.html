@@ -3,211 +3,466 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Bài Trắc Nghiệm</title>
+    <title>Test Auto Fill Quiz - Full Features</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
-            background: #f5f5f5;
         }
-        .quiz-container {
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        h2 {
-            color: #333;
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
             margin-bottom: 10px;
+            font-size: 32px;
         }
-        .question {
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
             margin-bottom: 30px;
-            padding: 15px;
-            background: #fafafa;
-            border-radius: 4px;
+            font-size: 16px;
         }
-        .question-text {
-            font-weight: bold;
+        
+        .answer-key {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 2px solid #ffc107;
+        }
+        
+        .answer-key h3 {
+            color: #856404;
             margin-bottom: 15px;
-            color: #555;
+            font-size: 20px;
         }
+        
+        .answer-key code {
+            background: #fff;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 20px;
+            color: #667eea;
+            font-weight: bold;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        
+        .answer-key ul {
+            margin-left: 20px;
+            margin-top: 10px;
+            color: #856404;
+        }
+        
+        .answer-key li {
+            margin: 5px 0;
+        }
+        
+        .instructions {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 2px solid #17a2b8;
+        }
+        
+        .instructions h3 {
+            color: #0c5460;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            color: #0c5460;
+        }
+        
+        .instructions li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        
+        .question {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .question:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .question h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .question-type {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .type-checkbox {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .type-radio {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .type-radio-multi {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
         .option {
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            padding: 10px;
-            margin: 5px 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
         }
+        
         .option:hover {
             background: #f0f0f0;
+            border-color: #667eea;
         }
-        .option input[type="radio"] {
-            margin-right: 10px;
+        
+        .option input {
+            margin-right: 12px;
             cursor: pointer;
+            width: 18px;
+            height: 18px;
         }
-        .test-button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 4px;
+        
+        .option label {
             cursor: pointer;
-            font-size: 16px;
-            margin: 10px 5px;
+            flex: 1;
+            font-size: 15px;
         }
-        .test-button:hover {
-            background: #0056b3;
-        }
-        .info {
-            background: #e7f3ff;
+        
+        .sub-question {
+            background: #fff;
             padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            border-left: 4px solid #007bff;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .sub-question-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .result-section {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border: 2px solid #28a745;
+        }
+        
+        .result-section h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .result-section ul {
+            margin-left: 20px;
+            color: #155724;
+        }
+        
+        .result-section li {
+            margin: 8px 0;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
-    <div class="quiz-container">
-        <h2>Bài tập trắc nghiệm</h2>
-        <div class="info">
-            <strong>Hướng dẫn test:</strong><br>
-            1. Nhấn F12 để mở Console<br>
-            2. Copy code từ autofill.js và paste vào Console<br>
-            3. Nhập đáp án: <code>A,D,A,D</code> (đáp án đúng cho 4 câu dưới)<br>
-            4. Hoặc nhấn nút "Chạy Script Test" bên dưới
+    <div class="container">
+        <h1>🧪 Test Auto Fill Quiz - Full Features</h1>
+        <p class="subtitle">Test Radio + Checkbox + Radio Multi-Select</p>
+        
+        <div class="instructions">
+            <h3>📋 Hướng dẫn test:</h3>
+            <ol>
+                <li>Click vào icon extension <strong>"Auto Fill Quiz"</strong> trên toolbar</li>
+                <li>Nhập đáp án: <code style="background:#fff;padding:3px 8px;border-radius:4px;color:#667eea;font-weight:bold;">AB,C,BD,A,A,B</code></li>
+                <li>Nhấn <strong>Enter</strong> hoặc click nút <strong>"Điền Đáp Án"</strong></li>
+                <li>Kiểm tra kết quả (các đáp án đúng sẽ được tô màu xanh)</li>
+                <li>Mở Console (F12) để xem log chi tiết</li>
+            </ol>
         </div>
 
-        <div class="question" role="radiogroup">
-            <div class="question-text">Câu 1: Giao thức mạng nào được sử dụng để chuyển đổi tên miền thành địa chỉ IP?</div>
-            <label class="option">
-                <input type="radio" name="q1" value="a">
-                <span>a. HTTP</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q1" value="b">
-                <span>b. DNS</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q1" value="c">
-                <span>c. FTP</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q1" value="d">
-                <span>d. SMTP</span>
-            </label>
+        <div class="answer-key">
+            <h3>🔑 Đáp án đúng:</h3>
+            <code>AB,C,BD,A,A,B</code>
+            <ul>
+                <li><strong>Câu 1:</strong> A và B (Java + Python) - <strong>Checkbox</strong></li>
+                <li><strong>Câu 2:</strong> C (Hyper Text Transfer Protocol) - <strong>Radio</strong></li>
+                <li><strong>Câu 3:</strong> B và D (React + Vue.js) - <strong>Checkbox</strong></li>
+                <li><strong>Câu 4:</strong> A (Cascading Style Sheets) - <strong>Radio</strong></li>
+                <li><strong>Câu 5a:</strong> A (Đúng - JS là ngôn ngữ biên dịch) - <strong>Radio</strong></li>
+                <li><strong>Câu 5b:</strong> B (Sai - HTML không phải ngôn ngữ lập trình) - <strong>Radio</strong></li>
+            </ul>
         </div>
 
-        <div class="question" role="radiogroup">
-            <div class="question-text">Câu 2: Giao thức mạng nào được sử dụng để truyền tải email?</div>
-            <label class="option">
-                <input type="radio" name="q2" value="a">
-                <span>a. HTTP</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q2" value="b">
-                <span>b. DNS</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q2" value="c">
-                <span>c. FTP</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q2" value="d">
-                <span>d. SMTP</span>
-            </label>
+        <!-- Câu 1: Checkbox - Chọn nhiều đáp án -->
+        <div class="question">
+            <h3>
+                Câu 1: Ngôn ngữ lập trình nào là ngôn ngữ hướng đối tượng?
+                <span class="question-type type-checkbox">CHECKBOX - Chọn nhiều</span>
+            </h3>
+            <div class="option">
+                <input type="checkbox" name="q1" id="q1a" value="A">
+                <label for="q1a">A. Java</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" name="q1" id="q1b" value="B">
+                <label for="q1b">B. Python</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" name="q1" id="q1c" value="C">
+                <label for="q1c">C. HTML</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" name="q1" id="q1d" value="D">
+                <label for="q1d">D. CSS</label>
+            </div>
         </div>
 
-        <div class="question" role="radiogroup">
-            <div class="question-text">Câu 3: Giao thức mạng nào được sử dụng để truy cập trang web?</div>
-            <label class="option">
-                <input type="radio" name="q3" value="a">
-                <span>a. HTTP</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q3" value="b">
-                <span>b. DNS</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q3" value="c">
-                <span>c. FTP</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q3" value="d">
-                <span>d. SMTP</span>
-            </label>
+        <!-- Câu 2: Radio - Chọn 1 đáp án -->
+        <div class="question">
+            <h3>
+                Câu 2: HTTP là viết tắt của gì?
+                <span class="question-type type-radio">RADIO - Chọn 1</span>
+            </h3>
+            <div class="option">
+                <input type="radio" name="q2" id="q2a" value="A">
+                <label for="q2a">A. Hyper Text Transfer Program</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q2" id="q2b" value="B">
+                <label for="q2b">B. Hyper Text Transfer Package</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q2" id="q2c" value="C">
+                <label for="q2c">C. Hyper Text Transfer Protocol</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q2" id="q2d" value="D">
+                <label for="q2d">D. Hyper Text Transmission Protocol</label>
+            </div>
         </div>
 
-        <div class="question" role="radiogroup">
-            <div class="question-text">Câu 4: Giao thức mạng nào được sử dụng để truyền tải tệp?</div>
-            <label class="option">
-                <input type="radio" name="q4" value="a">
-                <span>a. HTTP</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q4" value="b">
-                <span>b. DNS</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q4" value="c">
-                <span>c. FTP</span>
-            </label>
-            <label class="option">
-                <input type="radio" name="q4" value="d">
-                <span>d. SMTP</span>
-            </label>
+        <!-- Câu 3: Checkbox - Chọn nhiều đáp án -->
+        <div class="question">
+            <h3>
+                Câu 3: Framework nào dùng cho JavaScript?
+                <span class="question-type type-checkbox">CHECKBOX - Chọn nhiều</span>
+            </h3>
+            <div class="option">
+                <input type="checkbox" name="q3" id="q3a" value="A">
+                <label for="q3a">A. Django</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" name="q3" id="q3b" value="B">
+                <label for="q3b">B. React</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" name="q3" id="q3c" value="C">
+                <label for="q3c">C. Laravel</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" name="q3" id="q3d" value="D">
+                <label for="q3d">D. Vue.js</label>
+            </div>
         </div>
 
-        <button class="test-button" onclick="runAutofillScript()">🚀 Chạy Script Test</button>
-        <button class="test-button" onclick="resetAnswers()" style="background: #6c757d;">🔄 Reset</button>
+        <!-- Câu 4: Radio - Chọn 1 đáp án -->
+        <div class="question">
+            <h3>
+                Câu 4: CSS là viết tắt của gì?
+                <span class="question-type type-radio">RADIO - Chọn 1</span>
+            </h3>
+            <div class="option">
+                <input type="radio" name="q4" id="q4a" value="A">
+                <label for="q4a">A. Cascading Style Sheets</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q4" id="q4b" value="B">
+                <label for="q4b">B. Creative Style Sheets</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q4" id="q4c" value="C">
+                <label for="q4c">C. Computer Style Sheets</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q4" id="q4d" value="D">
+                <label for="q4d">D. Colorful Style Sheets</label>
+            </div>
+        </div>
+
+        <!-- Câu 5: Radio Multi-Select - Nhiều nhóm radio trong 1 câu -->
+        <div class="question">
+            <h3>
+                Câu 5: Đánh giá đúng/sai cho các câu sau:
+                <span class="question-type type-radio-multi">RADIO - Chọn nhiều nhóm</span>
+            </h3>
+            
+            <div class="sub-question">
+                <div class="sub-question-title">a) JavaScript là ngôn ngữ biên dịch</div>
+                <div class="option">
+                    <input type="radio" name="q5a" id="q5a_true" value="A">
+                    <label for="q5a_true">A. Đúng</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q5a" id="q5a_false" value="B">
+                    <label for="q5a_false">B. Sai</label>
+                </div>
+            </div>
+
+            <div class="sub-question">
+                <div class="sub-question-title">b) HTML là ngôn ngữ lập trình</div>
+                <div class="option">
+                    <input type="radio" name="q5b" id="q5b_true" value="A">
+                    <label for="q5b_true">A. Đúng</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q5b" id="q5b_false" value="B">
+                    <label for="q5b_false">B. Sai</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h3>✅ Kết quả mong đợi:</h3>
+            <ul>
+                <li><strong>Câu 1:</strong> ✓ A. Java và ✓ B. Python (2 checkbox được tô xanh)</li>
+                <li><strong>Câu 2:</strong> ✓ C. Hyper Text Transfer Protocol (1 radio được tô xanh)</li>
+                <li><strong>Câu 3:</strong> ✓ B. React và ✓ D. Vue.js (2 checkbox được tô xanh)</li>
+                <li><strong>Câu 4:</strong> ✓ A. Cascading Style Sheets (1 radio được tô xanh)</li>
+                <li><strong>Câu 5a:</strong> ✓ A. Đúng (1 radio được tô xanh)</li>
+                <li><strong>Câu 5b:</strong> ✓ B. Sai (1 radio được tô xanh)</li>
+                <li><strong>Thông báo:</strong> "✅ Hoàn thành! Đã chọn: 6/6 câu"</li>
+            </ul>
+        </div>
     </div>
 
-    <script src="autofill.js"></script>
     <script>
-        function runAutofillScript() {
-            // Simulate the autofill script with predefined answers
-            const answers = ['A', 'D', 'A', 'D']; // Đáp án đúng: HTTP, SMTP, HTTP, FTP
-            
-            const questions = document.querySelectorAll('div[role="radiogroup"]');
-            const answerMap = { "A": 0, "B": 1, "C": 2, "D": 3 };
-            
-            questions.forEach((q, idx) => {
-                const options = q.querySelectorAll('input[type="radio"]');
-                const answer = answers[idx];
-                const pos = answerMap[answer];
+        // Highlight khi chọn thủ công
+        document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const parent = this.closest('.option');
                 
-                if (pos !== undefined && pos < options.length) {
-                    options[pos].click();
-                    
-                    const parent = options[pos].closest('label');
-                    if (parent) {
-                        parent.style.backgroundColor = '#d4edda';
-                        parent.style.border = '2px solid #28a745';
-                    }
+                // Nếu là radio, bỏ highlight tất cả options cùng name
+                if (this.type === 'radio') {
+                    document.querySelectorAll(`input[name="${this.name}"]`).forEach(radio => {
+                        const radioParent = radio.closest('.option');
+                        if (radioParent) {
+                            radioParent.style.backgroundColor = '';
+                            radioParent.style.borderColor = '#e0e0e0';
+                        }
+                    });
+                }
+                
+                // Highlight option được chọn
+                if (this.checked) {
+                    parent.style.backgroundColor = '#d4edda';
+                    parent.style.borderColor = '#28a745';
+                    parent.style.fontWeight = 'bold';
+                } else {
+                    parent.style.backgroundColor = '';
+                    parent.style.borderColor = '#e0e0e0';
+                    parent.style.fontWeight = 'normal';
                 }
             });
-            
-            alert('✅ Đã tự động chọn đáp án!\nĐáp án: A,D,A,D\n(Tương đương: HTTP, SMTP, HTTP, FTP)');
-        }
+        });
+
+        // Debug info
+        console.log('=== 🧪 TEST AUTO FILL QUIZ - FULL FEATURES ===');
+        console.log('=== Thứ tự inputs trong DOM ===');
         
-        function resetAnswers() {
-            const options = document.querySelectorAll('.option');
-            options.forEach(opt => {
-                opt.style.backgroundColor = '';
-                opt.style.border = '';
-            });
+        const allInputs = Array.from(document.querySelectorAll('input')).filter(
+            input => input.type === 'radio' || input.type === 'checkbox'
+        );
+        
+        allInputs.forEach((input, idx) => {
+            console.log(`${idx}: name="${input.name}" type="${input.type}" value="${input.value}"`);
+        });
+        
+        const grouped = {};
+        const firstAppearance = {};
+        
+        allInputs.forEach((input, index) => {
+            const name = input.name;
+            if (!grouped[name]) {
+                grouped[name] = [];
+                firstAppearance[name] = index;
+            }
+            grouped[name].push(input);
+        });
+        
+        const nameOrder = Object.keys(grouped).sort((a, b) => firstAppearance[a] - firstAppearance[b]);
+        
+        console.log('\n=== Thứ tự câu hỏi ===');
+        nameOrder.forEach((name, idx) => {
+            const type = grouped[name][0].type;
+            console.log(`Câu ${idx + 1}: name="${name}" (${grouped[name].length} options, type=${type}, firstIndex=${firstAppearance[name]})`);
+        });
+        
+        console.log('\n=== Test với đáp án: AB,C,BD,A,A,B ===');
+        const answers = 'AB,C,BD,A,A,B'.split(',').map(a => a.trim().toUpperCase());
+        const questions = nameOrder.map(name => grouped[name]);
+        
+        const answerMap = {'A':0,'B':1,'C':2,'D':3};
+        
+        questions.forEach((options, idx) => {
+            const answer = answers[idx];
+            const positions = answer.split('').map(c => answerMap[c]).filter(p => p !== undefined);
+            const answerText = positions.map(p => String.fromCharCode(65 + p)).join('');
+            const type = options[0].type;
             
-            const radios = document.querySelectorAll('input[type="radio"]');
-            radios.forEach(radio => radio.checked = false);
-            
-            alert('🔄 Đã reset tất cả đáp án!');
-        }
+            console.log(`Câu ${idx + 1} (${options[0].name}, ${type}): Đáp án "${answer}" → Chọn ${answerText} (vị trí: ${positions.join(', ')})`);
+        });
+        
+        console.log('\n💡 Mở extension và nhập: AB,C,BD,A,A,B');
+        console.log('💡 Câu 5a và 5b là 2 câu riêng biệt (mỗi câu có name khác nhau)');
+        console.log('💡 Mỗi câu đều có values=[A,B] để đồng nhất');
     </script>
 </body>
 </html>

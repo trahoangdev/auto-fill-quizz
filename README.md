@@ -5,6 +5,8 @@ Extension Chrome/Edge tự động điền đáp án trắc nghiệm - Đơn gi�
 ## ✨ Tính Năng
 
 - ✅ **Tự động điền đáp án** - Chỉ cần nhập đáp án và click
+- ✅ **Hỗ trợ Radio + Checkbox** - Chọn 1 hoặc nhiều đáp án
+- ✅ **Chọn nhiều đáp án** - Hỗ trợ câu hỏi chọn nhiều (AB, CD, 012...)
 - ✅ **Hỗ trợ iframe** - Tự động mở iframe ra tab mới
 - ✅ **Lưu đáp án tự động** - Không cần nhập lại
 - ✅ **Highlight đáp án** - Đáp án được tô màu xanh
