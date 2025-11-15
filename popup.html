@@ -11,14 +11,44 @@
             box-sizing: border-box;
         }
         body {
-            width: 350px;
+            width: 380px;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         .container {
             background: white;
+            padding: 0;
+        }
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        .tab:hover {
+            background: #e9ecef;
+        }
+        .tab.active {
+            color: #667eea;
+            background: white;
+            border-bottom: 3px solid #667eea;
+        }
+        .tab-content {
+            display: none;
             padding: 20px;
+        }
+        .tab-content.active {
+            display: block;
         }
         h2 {
             margin: 0 0 15px 0;
@@ -118,37 +148,101 @@
             color: #856404;
             text-align: center;
         }
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: border-color 0.3s;
+        }
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .hint a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .hint a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>🚀 Auto Fill Quiz </h2>
-        
-        <div class="input-group">
-            <label for="answers">Nhập đáp án:</label>
-            <textarea id="answers" placeholder="A,C,B,D,A,B,C,D" autofocus></textarea>
-            <div class="hint">Cách nhau bởi dấu phẩy (,)</div>
+        <div class="tabs">
+            <div class="tab active" data-tab="manual">📝 Manual</div>
+            <div class="tab" data-tab="ai">🤖 AI Helper</div>
         </div>
 
-        <div class="examples">
-            <strong>Ví dụ:</strong><br>
-            • Chữ cái: A,C,B,D hoặc a,c,b,d<br>
-            • Số: 0,2,1,3 (0=A, 1=B, 2=C, 3=D)
+        <!-- Manual Tab -->
+        <div class="tab-content active" id="manual-tab">
+            <h2 style="margin-bottom: 15px; font-size: 18px; color: #667eea; text-align: center;">📝 Nhập Đáp Án Thủ Công</h2>
+            
+            <div class="input-group">
+                <label for="answers">Đáp án:</label>
+                <textarea id="answers" placeholder="A,C,B,D,A,B,C,D" autofocus style="min-height: 100px;"></textarea>
+                <div class="hint">Cách nhau bởi dấu phẩy (,)</div>
+            </div>
+
+            <div class="examples">
+                <strong>Ví dụ:</strong><br>
+                • Chữ cái: A,C,B,D hoặc a,c,b,d<br>
+                • Số: 0,2,1,3 (0=A, 1=B, 2=C, 3=D)
+            </div>
+
+            <button id="openIframeBtn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-bottom: 10px;">
+                📂 Mở Iframe Ra Tab Mới
+            </button>
+            
+            <button id="fillBtn">✨ Điền Đáp Án</button>
+
+            <div class="tip" style="margin-top: 15px;">
+                💡 <strong>Trang có iframe:</strong> Click "Mở Iframe" trước<br>
+                💡 <strong>Phím tắt:</strong> Ctrl+Enter để điền nhanh
+            </div>
         </div>
 
-        <button id="openIframeBtn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-bottom: 10px;">
-            📂 Mở Iframe Ra Tab Mới
-        </button>
-        
-        <button id="fillBtn">✨ Điền Đáp Án</button>
+        <!-- AI Tab -->
+        <div class="tab-content" id="ai-tab">
+            <h2 style="margin-bottom: 15px; font-size: 18px; color: #667eea; text-align: center;">🤖 AI Trợ Giúp</h2>
+            
+            <div class="input-group">
+                <label for="apiKey">🔑 Gemini API Key:</label>
+                <input type="password" id="apiKey" placeholder="Nhập API key">
+                <div class="hint">Lấy miễn phí: <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a></div>
+            </div>
+
+            <div class="input-group">
+                <label for="questionInput">❓ Paste câu hỏi:</label>
+                <textarea id="questionInput" placeholder="Paste câu hỏi + các đáp án A, B, C, D..." style="min-height: 100px;"></textarea>
+                <button id="askAiBtn" style="margin-top: 10px; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                    🤖 Hỏi AI Câu Này
+                </button>
+                <div id="singleAnswer" style="margin-top: 10px; padding: 10px; background: #e8f5e9; border-radius: 6px; display: none; font-weight: bold; text-align: center; font-size: 18px; color: #2e7d32;"></div>
+            </div>
+
+            <div class="input-group">
+                <label for="aiAnswers">📝 Đáp án (tự động ghép):</label>
+                <textarea id="aiAnswers" placeholder="A,C,B,D..." style="min-height: 80px;"></textarea>
+                <div class="hint">✅ Tự động lưu - không lo mất dữ liệu</div>
+                <button id="clearAiBtn" style="margin-top: 8px; padding: 8px; background: #dc3545; font-size: 13px;">
+                    🗑️ Xóa Đáp Án
+                </button>
+            </div>
+
+            <button id="fillAiBtn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">✨ Điền Đáp Án</button>
+
+            <div class="tip" style="margin-top: 15px;">
+                💡 Paste từng câu hỏi → AI trả lời → Lặp lại<br>
+                💡 <strong>Phím tắt:</strong> Ctrl+Enter để hỏi AI nhanh
+            </div>
+        </div>
 
         <div id="status" class="status"></div>
 
-        <div class="tip">
-            💡 <strong>Trang có iframe:</strong> Click "Mở Iframe" trước<br>
-            💡 <strong>Phím tắt:</strong> Ctrl+Enter để điền nhanh
-        </div>
-        <div class="create-by">
+        <div style="padding: 10px 20px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #e0e0e0;">
             <strong>by trahoangdev</strong>
         </div>
     </div>
