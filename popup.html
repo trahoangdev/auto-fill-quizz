@@ -1,533 +1,420 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auto Fill Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            width: 420px;
+            width: 400px;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
             min-height: 500px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
         }
-        
+
         .container {
-            background: #ffffff;
-            border-radius: 0;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
-        
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 24px 20px;
+
+        /* Header Area */
+        header {
             text-align: center;
-            color: white;
+            margin-bottom: 24px;
             position: relative;
-            overflow: hidden;
         }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-        
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header h1 {
+
+        h1 {
             font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 6px;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
             letter-spacing: -0.5px;
         }
-        
-        .header p {
-            font-size: 13px;
-            opacity: 0.9;
-            font-weight: 400;
-        }
-        
-        /* Tabs */
-        .tabs {
-            display: flex;
-            background: #f8f9fc;
-            border-bottom: 1px solid #e1e4e8;
-            position: relative;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 16px 12px;
-            text-align: center;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            color: #6b7280;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-bottom: 3px solid transparent;
-            position: relative;
-            user-select: none;
-        }
-        
-        .tab:hover {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-        
-        .tab.active {
-            color: #667eea;
-            background: white;
-            border-bottom-color: #667eea;
-        }
-        
-        .tab:active {
-            transform: scale(0.98);
-        }
-        
-        .tab-icon {
-            font-size: 20px;
-            display: block;
-            margin-bottom: 4px;
-        }
-        
-        /* Content */
-        .tab-content {
-            display: none;
-            padding: 24px 20px;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            color: #374151;
-        }
-        
-        label .icon {
-            font-size: 16px;
-        }
-        
-        textarea, input[type="password"] {
-            width: 100%;
-            padding: 12px 14px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 14px;
-            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-            resize: vertical;
-            min-height: 90px;
-            transition: all 0.3s ease;
-            background: #fafbfc;
-            line-height: 1.5;
-        }
-        
-        textarea::placeholder, input[type="password"]::placeholder {
-            color: #9ca3af;
-            opacity: 0.8;
-        }
-        
-        textarea:focus, input[type="password"]:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        input[type="password"] {
-            min-height: auto;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        .hint {
+
+        .subtitle {
             font-size: 12px;
-            color: #9ca3af;
-            margin-top: 6px;
+            font-weight: 500;
+            color: var(--text-sub);
+            background: rgba(255, 255, 255, 0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .subtitle a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .subtitle a:hover {
+            color: var(--primary);
+        }
+
+        /* Main Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            justify-content: space-between;
         }
-        
-        .hint a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
+
+        .label-icon {
+            font-size: 16px;
+            margin-right: 6px;
         }
-        
-        .hint a:hover {
-            text-decoration: underline;
+
+        .textarea-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
-        
-        /* Buttons */
-        button {
+
+        textarea {
             width: 100%;
-            padding: 14px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            flex: 1;
+            min-height: 120px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-main);
+            background: #f9fafb;
+            transition: all 0.2s ease;
+            resize: none;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .input-hint {
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        button {
             border: none;
-            border-radius: 10px;
-            font-size: 15px;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-        
+
         button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            transform: scale(0.96);
         }
-        
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-        
-        button.secondary {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
-            margin-bottom: 12px;
-        }
-        
-        button.secondary:hover {
-            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
-        }
-        
-        button.success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            box-shadow: 0 4px 12px rgba(56, 239, 125, 0.3);
-        }
-        
-        button.success:hover {
-            box-shadow: 0 6px 20px rgba(56, 239, 125, 0.4);
-        }
-        
-        button.danger {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-            box-shadow: 0 4px 12px rgba(235, 51, 73, 0.3);
-            padding: 10px 16px;
-            font-size: 13px;
-        }
-        
-        button.danger:hover {
-            box-shadow: 0 6px 20px rgba(235, 51, 73, 0.4);
-        }
-        
-        /* Status */
-        .status {
-            margin-top: 16px;
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 13px;
-            text-align: center;
-            display: none;
-            font-weight: 500;
-            animation: slideDown 0.3s ease;
-        }
-        
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .status.success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #6ee7b7;
-        }
-        
-        .status.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-        }
-        
-        .status.info {
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #93c5fd;
-        }
-        
-        /* Info boxes */
-        .examples {
-            background: linear-gradient(135deg, #f8f9fc 0%, #f3f4f6 100%);
-            padding: 14px;
-            border-radius: 10px;
-            margin-top: 12px;
-            margin-bottom: 16px;
-            font-size: 12px;
+
+        .btn-secondary {
+            background: #fff;
+            color: var(--text-main);
             border: 1px solid #e5e7eb;
-            line-height: 1.6;
+            flex: 1;
+            box-shadow: var(--shadow-sm);
         }
-        
-        .examples strong {
-            color: #667eea;
-            font-weight: 600;
-        }
-        
-        .examples code {
-            background: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-            font-size: 11px;
-            color: #667eea;
-            border: 1px solid #e5e7eb;
-        }
-        
-        .tip {
-            margin-top: 16px;
-            padding: 12px 14px;
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-radius: 10px;
-            font-size: 12px;
-            color: #92400e;
-            text-align: left;
-            line-height: 1.6;
-            border: 1px solid #fcd34d;
-        }
-        
-        .tip strong {
-            font-weight: 600;
-        }
-        
-        /* Single answer display */
-        #singleAnswer {
-            margin-top: 12px;
-            padding: 16px;
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border-radius: 10px;
-            display: none;
-            font-weight: 700;
-            text-align: center;
-            font-size: 24px;
-            color: #065f46;
-            border: 2px solid #6ee7b7;
-            animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        
-        /* Footer */
-        .footer {
-            padding: 16px 20px;
-            text-align: center;
-            font-size: 11px;
-            color: #9ca3af;
-            border-top: 1px solid #e5e7eb;
+
+        .btn-secondary:hover {
             background: #f9fafb;
+            border-color: #d1d5db;
+            color: var(--primary);
         }
-        
-        .footer strong {
-            color: #667eea;
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            flex: 1.5;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-frame {
+            background: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
+            color: white;
+            width: 100%;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        }
+
+        .btn-frame:hover {
+            box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Tips Section */
+        .tips {
+            background: rgba(255, 247, 237, 0.8);
+            border: 1px solid #ffedd5;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 20px;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: start;
+            gap: 8px;
+            font-size: 11px;
+            color: #9a3412;
+            margin-bottom: 4px;
+        }
+
+        .tip-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .tip-icon {
+            font-size: 12px;
+        }
+
+        /* Status Toast */
+        .status {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 12px 20px;
+            border-radius: 50px;
+            background: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            white-space: nowrap;
+        }
+
+        .status.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .status.success {
+            color: var(--success);
+            border: 1px solid #d1fae5;
+        }
+
+        .status.error {
+            color: var(--error);
+            border: 1px solid #fee2e2;
+        }
+
+        .status.info {
+            color: var(--primary);
+            border: 1px solid #e0e7ff;
+        }
+
+        /* Hidden tabs support for JS compatibility */
+        .tabs {
+            display: none;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        /* Badge for examples */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
             font-weight: 600;
-        }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #5568d3;
-        }
-        
-        /* Loading state */
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .loading::before {
-            content: '⏳';
-            display: inline-block;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 400px) {
-            body {
-                width: 360px;
-            }
-            
-            .header h1 {
-                font-size: 20px;
-            }
-            
-            .tab {
-                font-size: 12px;
-                padding: 14px 8px;
-            }
+            background: #f3f4f6;
+            color: var(--text-sub);
+            border: 1px solid #e5e7eb;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
-        <div class="header">
-            <div class="header-content">
-                <h1>✨ Auto Fill Quiz</h1>
-                <p>Điền đáp án trắc nghiệm tự động & thông minh</p>
-            </div>
-        </div>
+        <header>
+            <h1>AutoFill Quiz</h1>
+            <span class="subtitle">Made by <a href="https://github.com/trahoangdev"
+                    target="_blank">trahoangdev</a></span>
+        </header>
 
-        <!-- Tabs -->
+        <!-- Hidden Tab Controller (for JS compatibility) -->
         <div class="tabs">
-            <div class="tab active" data-tab="manual">
-                <span class="tab-icon">📝</span>
-                Manual
-            </div>
-            <div class="tab" data-tab="ai">
-                <span class="tab-icon">🤖</span>
-                AI Helper
-            </div>
+            <div class="tab active" data-tab="manual"></div>
+            <div class="tab" data-tab="ai"></div>
         </div>
 
-        <!-- Manual Tab -->
+        <!-- Main Content -->
         <div class="tab-content active" id="manual-tab">
-            <div class="input-group">
-                <label for="answers">
-                    <span class="icon">📋</span>
-                    Nhập đáp án
+            <button id="openIframeBtn" class="btn-frame">
+                <span>📂</span> Mở Iframe Ra Tab Mới
+            </button>
+
+            <div class="card">
+                <label>
+                    <span>🎯 Nhập Đáp Án</span>
+                    <span class="badge">A, B, C, D</span>
                 </label>
-                <textarea id="answers" placeholder="A,C,B,D,A,B,C,D" autofocus></textarea>
-                <div class="hint">💡 Cách nhau bởi dấu phẩy (,)</div>
+
+                <div class="textarea-wrapper">
+                    <textarea id="answers" placeholder="A, C, B, D..." spellcheck="false" autofocus></textarea>
+                    <br>
+                    <div class="input-hint">Cách nhau bởi dấu phẩy (,)</div></br>
+                </div>
+
+                <div class="actions">
+                    <button id="fillBtn" class="btn-primary">
+                        <span>✨</span> Điền Đáp Án
+                    </button>
+                </div>
             </div>
 
-            <div class="examples">
-                <strong>📌 Ví dụ:</strong><br>
-                • Chữ cái: <code>A,C,B,D</code> hoặc <code>a,c,b,d</code><br>
-                • Số: <code>0,2,1,3</code> (0=A, 1=B, 2=C, 3=D)
-            </div>
-
-            <button id="openIframeBtn" class="secondary">
-                📂 Mở Iframe Ra Tab Mới
-            </button>
-            
-            <button id="fillBtn">
-                ✨ Điền Đáp Án Ngay
-            </button>
-
-            <div class="tip">
-                💡 <strong>Trang có iframe:</strong> Click "Mở Iframe" trước<br>
-                ⚡ <strong>Phím tắt:</strong> Ctrl+Enter để điền nhanh
+            <div class="tips">
+                <div class="tip-item">
+                    <span class="tip-icon">💡</span>
+                    <span><strong>Trang có iframe:</strong> Click "Mở Iframe" trước khi điền.</span>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">⌨️</span>
+                    <span><strong>Phím tắt:</strong> Ctrl + Enter để điền nhanh.</span>
+                </div>
             </div>
         </div>
 
-        <!-- AI Tab -->
+        <!-- Hidden AI Tab Content (Permissions & APIs logic still exists in JS) -->
         <div class="tab-content" id="ai-tab">
-            <div class="input-group">
-                <label for="apiKey">
-                    <span class="icon">🔑</span>
-                    Gemini API Key
-                </label>
-                <input type="password" id="apiKey" placeholder="Nhập API key của bạn">
-                <div class="hint">🎁 Lấy miễn phí tại <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a></div>
+            <div style="text-align: center; color: var(--text-sub); padding: 20px;">
+                Cần kích hoạt trong code để sử dụng AI.
             </div>
-
-            <div class="input-group">
-                <label for="questionInput">
-                    <span class="icon">❓</span>
-                    Paste câu hỏi
-                </label>
-                <textarea id="questionInput" placeholder="Paste câu hỏi + các đáp án A, B, C, D..."></textarea>
-                <button id="askAiBtn" class="success" style="margin-top: 12px;">
-                    🤖 Hỏi AI Câu Này
-                </button>
-                <div id="singleAnswer"></div>
-            </div>
-
-            <div class="input-group">
-                <label for="aiAnswers">
-                    <span class="icon">📝</span>
-                    Đáp án (tự động ghép)
-                </label>
-                <textarea id="aiAnswers" placeholder="A,C,B,D..." style="min-height: 80px;"></textarea>
-                <div class="hint">✅ Tự động lưu - không lo mất dữ liệu</div>
-                <button id="clearAiBtn" class="danger" style="margin-top: 10px;">
-                    🗑️ Xóa Đáp Án
-                </button>
-            </div>
-
-            <button id="fillAiBtn">
-                ✨ Điền Đáp Án Ngay
-            </button>
-
-            <div class="tip">
-                💡 Paste từng câu hỏi → AI trả lời → Lặp lại<br>
-                ⚡ <strong>Phím tắt:</strong> Ctrl+Enter để hỏi AI nhanh
-            </div>
-        </div>
-
-        <div id="status" class="status"></div>
-
-        <!-- Footer -->
-        <div class="footer">
-            Made with ❤️ by <strong>trahoangdev</strong>
+            <!-- Keeping IDs for JS compatibility -->
+            <input type="password" id="apiKey" style="display:none">
+            <textarea id="questionInput" style="display:none"></textarea>
+            <button id="askAiBtn" style="display:none"></button>
+            <div id="singleAnswer" style="display:none"></div>
+            <textarea id="aiAnswers" style="display:none"></textarea>
+            <button id="fillAiBtn" style="display:none"></button>
+            <button id="clearAiBtn" style="display:none"></button>
         </div>
     </div>
 
+    <!-- Status Toast -->
+    <div id="status" class="status"></div>
+
     <script src="popup.js"></script>
+    <script>
+        const statusObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                    const statusDiv = document.getElementById('status');
+                    if (statusDiv.style.display === 'flex') {
+                        statusDiv.classList.add('show');
+                    } else {
+                        statusDiv.classList.remove('show');
+                    }
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const statusDiv = document.getElementById('status');
+            if (statusDiv) {
+                statusObserver.observe(statusDiv, { attributes: true });
+            }
+        });
+    </script>
 </body>
+
 </html>
