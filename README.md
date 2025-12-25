@@ -2,7 +2,7 @@
 
 Extension Chrome/Edge giúp tự động điền đáp án trắc nghiệm nhanh chóng, chính xác với giao diện **Glassmorphism** hiện đại.
 
-![Auto Fill Quiz UI](https://github.com/user-attachments/assets/placeholder)
+![Auto Fill Quiz UI](public/assets/image.png)
 
 ## ✨ Tính Năng Nổi Bật
 
