@@ -1,252 +1,364 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auto Fill Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            width: 380px;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .container {
-            background: white;
-            padding: 0;
-        }
-        .tabs {
+            width: 400px;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 500px;
             display: flex;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e0e0e0;
+            flex-direction: column;
         }
-        .tab {
+
+        .container {
+            padding: 24px;
             flex: 1;
-            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Area */
+        header {
             text-align: center;
-            cursor: pointer;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-sub);
+            background: rgba(255, 255, 255, 0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .subtitle a {
+            color: inherit;
+            text-decoration: none;
             font-weight: 600;
-            color: #666;
-            transition: all 0.3s;
-            border-bottom: 3px solid transparent;
+            transition: color 0.2s;
         }
-        .tab:hover {
-            background: #e9ecef;
+
+        .subtitle a:hover {
+            color: var(--primary);
         }
-        .tab.active {
-            color: #667eea;
-            background: white;
-            border-bottom: 3px solid #667eea;
+
+        /* Main Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
-        .tab-content {
-            display: none;
-            padding: 20px;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        h2 {
-            margin: 0 0 15px 0;
-            font-size: 20px;
-            color: #667eea;
-            text-align: center;
-        }
-        .input-group {
-            margin-bottom: 15px;
-        }
+
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
             font-size: 14px;
-            color: #555;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
+
+        .label-icon {
+            font-size: 16px;
+            margin-right: 6px;
+        }
+
+        .textarea-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
         textarea {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            flex: 1;
+            min-height: 120px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
             font-size: 14px;
-            font-family: 'Courier New', monospace;
-            resize: vertical;
-            min-height: 80px;
-            transition: border-color 0.3s;
+            line-height: 1.6;
+            color: var(--text-main);
+            background: #f9fafb;
+            transition: all 0.2s ease;
+            resize: none;
         }
+
         textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
-        .hint {
-            font-size: 12px;
-            color: #888;
-            margin-top: 5px;
-            font-style: italic;
+
+        .input-hint {
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-top: 8px;
+            text-align: right;
         }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: auto;
+        }
+
         button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
+
         button:active {
-            transform: translateY(0);
+            transform: scale(0.96);
         }
-        .status {
-            margin-top: 15px;
+
+        .btn-secondary {
+            background: #fff;
+            color: var(--text-main);
+            border: 1px solid #e5e7eb;
+            flex: 1;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            flex: 1.5;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .tips {
+            background: rgba(255, 247, 237, 0.8);
+            border: 1px solid #ffedd5;
+            border-radius: 12px;
             padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            text-align: center;
-            display: none;
+            margin-top: 20px;
         }
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+
+        .tip-item {
+            display: flex;
+            align-items: start;
+            gap: 8px;
+            font-size: 11px;
+            color: #9a3412;
+            margin-bottom: 4px;
         }
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+
+        .tip-item:last-child {
+            margin-bottom: 0;
         }
-        .status.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-        .examples {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 10px;
+
+        .tip-icon {
             font-size: 12px;
         }
-        .examples strong {
-            color: #667eea;
-        }
-        .tip {
-            margin-top: 15px;
-            padding: 10px;
-            background: #fff3cd;
-            border-radius: 6px;
-            font-size: 11px;
-            color: #856404;
-            text-align: center;
-        }
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+
+        /* Status Toast */
+        .status {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 12px 20px;
+            border-radius: 50px;
+            background: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             font-size: 13px;
-            transition: border-color 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            white-space: nowrap;
         }
-        input[type="password"]:focus {
-            outline: none;
-            border-color: #667eea;
+
+        .status.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
-        .hint a {
-            color: #667eea;
-            text-decoration: none;
+
+        .status.success {
+            color: var(--success);
+            border: 1px solid #d1fae5;
         }
-        .hint a:hover {
-            text-decoration: underline;
+
+        .status.error {
+            color: var(--error);
+            border: 1px solid #fee2e2;
+        }
+
+        .status.info {
+            color: var(--primary);
+            border: 1px solid #e0e7ff;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            background: #f3f4f6;
+            color: var(--text-sub);
+            border: 1px solid #e5e7eb;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <div class="tabs">
-            <div class="tab active" data-tab="manual">📝 Manual</div>
-            <div class="tab" data-tab="ai">🤖 AI Helper</div>
-        </div>
+        <!-- Header -->
+        <header>
+            <h1>AutoFill Quiz</h1>
+            <span class="subtitle">Made by <a href="https://github.com/trahoangdev"
+                    target="_blank">trahoangdev</a></span>
+        </header>
 
-        <!-- Manual Tab -->
-        <div class="tab-content active" id="manual-tab">
-            <h2 style="margin-bottom: 15px; font-size: 18px; color: #667eea; text-align: center;">📝 Nhập Đáp Án Thủ Công</h2>
-            
-            <div class="input-group">
-                <label for="answers">Đáp án:</label>
-                <textarea id="answers" placeholder="A,C,B,D,A,B,C,D" autofocus style="min-height: 100px;"></textarea>
-                <div class="hint">Cách nhau bởi dấu phẩy (,)</div>
+        <!-- Main Content (Manual Only) -->
+        <div class="card">
+            <label>
+                <span>🎯 Nhập Đáp Án</span>
+                <span class="badge">A, B, C, D</span>
+            </label>
+
+            <div class="textarea-wrapper">
+                <textarea id="answers" placeholder="A, C, B, D..." spellcheck="false" autofocus></textarea>
+                <br>
+                <div class="input-hint">Cách nhau bởi dấu phẩy (,)</div></br>
             </div>
 
-            <div class="examples">
-                <strong>Ví dụ:</strong><br>
-                • Chữ cái: A,C,B,D hoặc a,c,b,d<br>
-                • Số: 0,2,1,3 (0=A, 1=B, 2=C, 3=D)
-            </div>
-
-            <button id="openIframeBtn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-bottom: 10px;">
-                📂 Mở Iframe Ra Tab Mới
-            </button>
-            
-            <button id="fillBtn">✨ Điền Đáp Án</button>
-
-            <div class="tip" style="margin-top: 15px;">
-                💡 <strong>Trang có iframe:</strong> Click "Mở Iframe" trước<br>
-                💡 <strong>Phím tắt:</strong> Ctrl+Enter để điền nhanh
-            </div>
-        </div>
-
-        <!-- AI Tab -->
-        <div class="tab-content" id="ai-tab">
-            <h2 style="margin-bottom: 15px; font-size: 18px; color: #667eea; text-align: center;">🤖 AI Trợ Giúp</h2>
-            
-            <div class="input-group">
-                <label for="apiKey">🔑 Gemini API Key:</label>
-                <input type="password" id="apiKey" placeholder="Nhập API key">
-                <div class="hint">Lấy miễn phí: <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a></div>
-            </div>
-
-            <div class="input-group">
-                <label for="questionInput">❓ Paste câu hỏi:</label>
-                <textarea id="questionInput" placeholder="Paste câu hỏi + các đáp án A, B, C, D..." style="min-height: 100px;"></textarea>
-                <button id="askAiBtn" style="margin-top: 10px; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
-                    🤖 Hỏi AI Câu Này
+            <div class="actions">
+                <button id="openIframeBtn" class="btn-secondary">
+                    <span>📂</span> Mở Iframe
                 </button>
-                <div id="singleAnswer" style="margin-top: 10px; padding: 10px; background: #e8f5e9; border-radius: 6px; display: none; font-weight: bold; text-align: center; font-size: 18px; color: #2e7d32;"></div>
-            </div>
-
-            <div class="input-group">
-                <label for="aiAnswers">📝 Đáp án (tự động ghép):</label>
-                <textarea id="aiAnswers" placeholder="A,C,B,D..." style="min-height: 80px;"></textarea>
-                <div class="hint">✅ Tự động lưu - không lo mất dữ liệu</div>
-                <button id="clearAiBtn" style="margin-top: 8px; padding: 8px; background: #dc3545; font-size: 13px;">
-                    🗑️ Xóa Đáp Án
+                <button id="fillBtn" class="btn-primary">
+                    <span>✨</span> Điền Đáp Án
                 </button>
             </div>
-
-            <button id="fillAiBtn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">✨ Điền Đáp Án</button>
-
-            <div class="tip" style="margin-top: 15px;">
-                💡 Paste từng câu hỏi → AI trả lời → Lặp lại<br>
-                💡 <strong>Phím tắt:</strong> Ctrl+Enter để hỏi AI nhanh
-            </div>
         </div>
 
-        <div id="status" class="status"></div>
-
-        <div style="padding: 10px 20px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #e0e0e0;">
-            <strong>by trahoangdev</strong>
+        <div class="tips">
+            <div class="tip-item">
+                <span class="tip-icon">💡</span>
+                <span><strong>Mẹo:</strong> Nếu trang có iframe, hãy mở iframe trước.</span>
+            </div>
+            <div class="tip-item">
+                <span class="tip-icon">⌨️</span>
+                <span><strong>Phím tắt:</strong> Ctrl + Enter để điền nhanh.</span>
+            </div>
         </div>
     </div>
 
+    <!-- Status Toast -->
+    <div id="status" class="status"></div>
+
     <script src="popup.js"></script>
+    <script>
+        const statusObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                    const statusDiv = document.getElementById('status');
+                    if (statusDiv.style.display === 'flex') {
+                        statusDiv.classList.add('show');
+                    } else {
+                        statusDiv.classList.remove('show');
+                    }
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const statusDiv = document.getElementById('status');
+            if (statusDiv) {
+                statusObserver.observe(statusDiv, { attributes: true });
+            }
+        });
+    </script>
 </body>
+
 </html>
